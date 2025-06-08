@@ -25,7 +25,6 @@ from utils import resize_and_crop, resize_and_padding
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--base_model_path", type=str, default="booksforcharlie/stable-diffusion-inpainting")
-    parser.add_argument("--p2p_base_model_path", type=str, default="timbrooks/instruct-pix2pix")
     parser.add_argument("--resume_path", type=str, default="zhengchong/CatVTON")
     parser.add_argument("--output_dir", type=str, default="resource/demo/output")
     parser.add_argument("--width", type=int, default=512)
