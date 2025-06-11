@@ -64,6 +64,7 @@ automasker = AutoMasker(
 
 @spaces.GPU(duration=120)
 def submit_function(person_image, cloth_image, cloth_type, num_inference_steps, guidance_scale, seed, show_type):
+    print({'cloth_type': cloth_type, 'num_inference_steps': num_inference_steps, 'guidance_scale': guidance_scale, 'seed': seed, 'show_type': show_type})
     person_image, mask = person_image["background"], person_image["layers"][0]
     mask = Image.open(mask).convert("L")
     if len(np.unique(np.array(mask))) == 1:
