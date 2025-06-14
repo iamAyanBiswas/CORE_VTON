@@ -21,3 +21,9 @@ av
 gradio
 peft
 huggingface_hub
+python-dotenv
+cloudinary
+fastapi
+uvicorn
+httpx
+pyngrok 
