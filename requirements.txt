@@ -27,3 +27,4 @@ fastapi
 uvicorn
 httpx
 pyngrok 
+validators
