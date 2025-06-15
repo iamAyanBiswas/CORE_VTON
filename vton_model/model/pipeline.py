@@ -14,9 +14,9 @@ from diffusers.utils.torch_utils import randn_tensor
 from huggingface_hub import snapshot_download
 from transformers import CLIPImageProcessor
 
-from model.attn_processor import SkipAttnProcessor
-from model.utils import get_trainable_module, init_adapter
-from utils import (compute_vae_encodings, numpy_to_pil, prepare_image,
+from vton_model.model.attn_processor import SkipAttnProcessor
+from vton_model.model.utils import get_trainable_module, init_adapter
+from vton_model.utils import (compute_vae_encodings, numpy_to_pil, prepare_image,
                    prepare_mask_image, resize_and_crop, resize_and_padding)
 
 

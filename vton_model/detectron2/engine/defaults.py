@@ -24,7 +24,7 @@ from torch.nn.parallel import DistributedDataParallel
 import vton_model.detectron2.data.transforms as T
 from vton_model.detectron2.checkpoint import DetectionCheckpointer
 from vton_model.detectron2.config import CfgNode, LazyConfig
-from detectron2.data import (
+from vton_model.detectron2.data import (
     MetadataCatalog,
     build_detection_test_loader,
     build_detection_train_loader,

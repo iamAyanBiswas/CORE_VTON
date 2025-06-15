@@ -9,9 +9,9 @@ from fvcore.transforms import HFlipTransform, NoOpTransform
 from torch import nn
 from torch.nn.parallel import DistributedDataParallel
 
-from detectron2.config import configurable
-from detectron2.data.detection_utils import read_image
-from detectron2.data.transforms import (
+from vton_model.detectron2.config import configurable
+from vton_model.detectron2.data.detection_utils import read_image
+from vton_model.detectron2.data.transforms import (
     RandomFlip,
     ResizeShortestEdge,
     ResizeTransform,

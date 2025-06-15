@@ -25,9 +25,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from detectron2.layers import ShapeSpec
-from detectron2.modeling.backbone import BACKBONE_REGISTRY
-from detectron2.modeling.backbone.backbone import Backbone
+from vton_model.detectron2.layers import ShapeSpec
+from vton_model.detectron2.modeling.backbone import BACKBONE_REGISTRY
+from vton_model.detectron2.modeling.backbone.backbone import Backbone
 
 from .hrnet import build_pose_hrnet_backbone
 
