@@ -17,7 +17,7 @@ from detectron2.data.transforms import (
     ResizeTransform,
     apply_augmentations,
 )
-from detectron2.structures import Boxes, Instances
+from vton_model.detectron2.structures import Boxes, Instances
 
 from .meta_arch import GeneralizedRCNN
 from .postprocessing import detector_postprocess

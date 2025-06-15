@@ -4,10 +4,10 @@ import logging
 from typing import Dict, List
 import torch
 
-from detectron2.config import configurable
-from detectron2.layers import ShapeSpec, batched_nms_rotated, cat
-from detectron2.structures import Instances, RotatedBoxes, pairwise_iou_rotated
-from detectron2.utils.memory import retry_if_cuda_oom
+from vton_model.detectron2.config import configurable
+from vton_model.detectron2.layers import ShapeSpec, batched_nms_rotated, cat
+from vton_model.detectron2.structures import Instances, RotatedBoxes, pairwise_iou_rotated
+from vton_model.detectron2.utils.memory import retry_if_cuda_oom
 
 from ..box_regression import Box2BoxTransformRotated
 from .build import PROPOSAL_GENERATOR_REGISTRY
