@@ -5,7 +5,7 @@ import numpy as np
 from typing import Iterable, Optional, Tuple
 import cv2
 
-from densepose.structures import DensePoseDataRelative
+from vton_model.densepose.structures import DensePoseDataRelative
 
 from .base import Boxes, Image, MatrixVisualizer, PointsVisualizer
 

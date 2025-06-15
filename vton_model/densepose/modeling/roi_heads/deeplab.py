@@ -7,8 +7,8 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from detectron2.config import CfgNode
-from detectron2.layers import Conv2d
+from vton_model.detectron2.config import CfgNode
+from vton_model.detectron2.layers import Conv2d
 
 from .registry import ROI_DENSEPOSE_HEAD_REGISTRY
 

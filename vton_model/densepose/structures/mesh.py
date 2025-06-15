@@ -7,9 +7,9 @@ from functools import lru_cache
 from typing import Dict, Optional, Tuple
 import torch
 
-from detectron2.utils.file_io import PathManager
+from vton_model.detectron2.utils.file_io import PathManager
 
-from densepose.data.meshes.catalog import MeshCatalog, MeshInfo
+from vton_model.densepose.data.meshes.catalog import MeshCatalog, MeshInfo
 
 
 def _maybe_copy_to_device(

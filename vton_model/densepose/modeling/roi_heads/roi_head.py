@@ -9,11 +9,11 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 
-from detectron2.layers import Conv2d, ShapeSpec, get_norm
-from detectron2.modeling import ROI_HEADS_REGISTRY, StandardROIHeads
-from detectron2.modeling.poolers import ROIPooler
-from detectron2.modeling.roi_heads import select_foreground_proposals
-from detectron2.structures import ImageList, Instances
+from vton_model.detectron2.layers import Conv2d, ShapeSpec, get_norm
+from vton_model.detectron2.modeling import ROI_HEADS_REGISTRY, StandardROIHeads
+from vton_model.detectron2.modeling.poolers import ROIPooler
+from vton_model.detectron2.modeling.roi_heads import select_foreground_proposals
+from vton_model.detectron2.structures import ImageList, Instances
 
 from .. import (
     build_densepose_data_filter,

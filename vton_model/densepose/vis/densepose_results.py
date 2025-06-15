@@ -7,7 +7,7 @@ from typing import List, Optional, Tuple
 import cv2
 import torch
 
-from densepose.structures import DensePoseDataRelative
+from vton_model.densepose.structures import DensePoseDataRelative
 
 from ..structures import DensePoseChartResult
 from .base import Boxes, Image, MatrixVisualizer

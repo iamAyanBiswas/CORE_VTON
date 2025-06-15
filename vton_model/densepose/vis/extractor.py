@@ -5,17 +5,17 @@ import logging
 from typing import List, Optional, Sequence, Tuple
 import torch
 
-from detectron2.layers.nms import batched_nms
-from detectron2.structures.instances import Instances
+from vton_model.detectron2.layers.nms import batched_nms
+from vton_model.detectron2.structures.instances import Instances
 
-from densepose.converters import ToChartResultConverterWithConfidences
-from densepose.structures import (
+from vton_model.densepose.converters import ToChartResultConverterWithConfidences
+from vton_model.densepose.structures import (
     DensePoseChartResultWithConfidences,
     DensePoseEmbeddingPredictorOutput,
 )
-from densepose.vis.bounding_box import BoundingBoxVisualizer, ScoredBoundingBoxVisualizer
-from densepose.vis.densepose_outputs_vertex import DensePoseOutputsVertexVisualizer
-from densepose.vis.densepose_results import DensePoseResultsVisualizer
+from vton_model.densepose.vis.bounding_box import BoundingBoxVisualizer, ScoredBoundingBoxVisualizer
+from vton_model.densepose.vis.densepose_outputs_vertex import DensePoseOutputsVertexVisualizer
+from vton_model.densepose.vis.densepose_results import DensePoseResultsVisualizer
 
 from .base import CompoundVisualizer
 

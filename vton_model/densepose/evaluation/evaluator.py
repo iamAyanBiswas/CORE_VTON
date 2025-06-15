@@ -17,17 +17,17 @@ import torch
 from pycocotools.coco import COCO
 from tabulate import tabulate
 
-from detectron2.config import CfgNode
-from detectron2.data import MetadataCatalog
-from detectron2.evaluation import DatasetEvaluator
-from detectron2.structures import BoxMode
-from detectron2.utils.comm import gather, get_rank, is_main_process, synchronize
-from detectron2.utils.file_io import PathManager
-from detectron2.utils.logger import create_small_table
+from vton_model.detectron2.config import CfgNode
+from vton_model.detectron2.data import MetadataCatalog
+from vton_model.detectron2.evaluation import DatasetEvaluator
+from vton_model.detectron2.structures import BoxMode
+from vton_model.detectron2.utils.comm import gather, get_rank, is_main_process, synchronize
+from vton_model.detectron2.utils.file_io import PathManager
+from vton_model.detectron2.utils.logger import create_small_table
 
-from densepose.converters import ToChartResultConverter, ToMaskConverter
-from densepose.data.datasets.coco import maybe_filter_and_map_categories_cocoapi
-from densepose.structures import (
+from vton_model.densepose.converters import ToChartResultConverter, ToMaskConverter
+from vton_model.densepose.data.datasets.coco import maybe_filter_and_map_categories_cocoapi
+from vton_model.densepose.structures import (
     DensePoseChartPredictorOutput,
     DensePoseEmbeddingPredictorOutput,
     quantize_densepose_chart_result,

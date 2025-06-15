@@ -7,8 +7,8 @@ import pycocotools.mask as mask_util
 import torch
 from torch import device
 
-from detectron2.layers.roi_align import ROIAlign
-from detectron2.utils.memory import retry_if_cuda_oom
+from vton_model.detectron2.layers.roi_align import ROIAlign
+from vton_model.detectron2.utils.memory import retry_if_cuda_oom
 
 from .boxes import Boxes
 

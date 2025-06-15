@@ -9,21 +9,21 @@ from typing import List, Optional, Union
 import torch
 from torch import nn
 
-from detectron2.checkpoint import DetectionCheckpointer
-from detectron2.config import CfgNode
-from detectron2.engine import DefaultTrainer
-from detectron2.evaluation import (
+from vton_model.detectron2.checkpoint import DetectionCheckpointer
+from vton_model.detectron2.config import CfgNode
+from vton_model.detectron2.engine import DefaultTrainer
+from vton_model.detectron2.evaluation import (
     DatasetEvaluator,
     DatasetEvaluators,
     inference_on_dataset,
     print_csv_format,
 )
-from detectron2.solver.build import get_default_optimizer_params, maybe_add_gradient_clipping
-from detectron2.utils import comm
-from detectron2.utils.events import EventWriter, get_event_storage
+from vton_model.detectron2.solver.build import get_default_optimizer_params, maybe_add_gradient_clipping
+from vton_model.detectron2.utils import comm
+from vton_model.detectron2.utils.events import EventWriter, get_event_storage
 
-from densepose import DensePoseDatasetMapperTTA, DensePoseGeneralizedRCNNWithTTA, load_from_cfg
-from densepose.data import (
+from vton_model.densepose import DensePoseDatasetMapperTTA, DensePoseGeneralizedRCNNWithTTA, load_from_cfg
+from vton_model.densepose.data import (
     DatasetMapper,
     build_combined_loader,
     build_detection_test_loader,
@@ -31,9 +31,9 @@ from densepose.data import (
     build_inference_based_loaders,
     has_inference_based_loaders,
 )
-from densepose.evaluation.d2_evaluator_adapter import Detectron2COCOEvaluatorAdapter
-from densepose.evaluation.evaluator import DensePoseCOCOEvaluator, build_densepose_evaluator_storage
-from densepose.modeling.cse import Embedder
+from vton_model.densepose.evaluation.d2_evaluator_adapter import Detectron2COCOEvaluatorAdapter
+from vton_model.densepose.evaluation.evaluator import DensePoseCOCOEvaluator, build_densepose_evaluator_storage
+from vton_model.densepose.modeling.cse import Embedder
 
 
 class SampleCountingLoader:

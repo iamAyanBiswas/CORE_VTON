@@ -8,9 +8,9 @@ from typing import Any, Dict, List, Optional, Tuple
 import torch
 from torch.nn import functional as F
 
-from detectron2.structures import BoxMode, Instances
+from vton_model.detectron2.structures import BoxMode, Instances
 
-from densepose import DensePoseDataRelative
+from vton_model.densepose import DensePoseDataRelative
 
 LossDict = Dict[str, torch.Tensor]
 

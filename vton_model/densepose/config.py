@@ -2,7 +2,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates.
 # pyre-ignore-all-errors
 
-from detectron2.config import CfgNode as CN
+from vton_model.detectron2.config import CfgNode as CN
 
 
 def add_dataset_category_config(cfg: CN) -> None:

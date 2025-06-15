@@ -5,9 +5,9 @@ import numpy as np
 import torch
 from torch.nn import functional as F
 
-from densepose.data.meshes.catalog import MeshCatalog
-from densepose.structures.mesh import load_mesh_symmetry
-from densepose.structures.transform_data import DensePoseTransformData
+from vton_model.densepose.data.meshes.catalog import MeshCatalog
+from vton_model.densepose.structures.mesh import load_mesh_symmetry
+from vton_model.densepose.structures.transform_data import DensePoseTransformData
 
 
 class DensePoseDataRelative:

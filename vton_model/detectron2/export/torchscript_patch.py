@@ -10,9 +10,9 @@ import torch
 from torch import nn
 
 # need some explicit imports due to https://github.com/pytorch/pytorch/issues/38964
-import detectron2  # noqa F401
-from detectron2.structures import Boxes, Instances
-from detectron2.utils.env import _import_file
+import vton_model.detectron2  # noqa F401
+from vton_model.detectron2.structures import Boxes, Instances
+from vton_model.detectron2.utils.env import _import_file
 
 _counter = 0
 

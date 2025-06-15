@@ -4,7 +4,7 @@
 
 from typing import Any
 
-from detectron2.structures import Boxes
+from vton_model.detectron2.structures import Boxes
 
 from ..structures import DensePoseChartResult, DensePoseChartResultWithConfidences
 from .base import BaseConverter

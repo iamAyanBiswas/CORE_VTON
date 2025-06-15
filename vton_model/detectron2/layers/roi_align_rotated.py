@@ -5,7 +5,7 @@ from torch.autograd import Function
 from torch.autograd.function import once_differentiable
 from torch.nn.modules.utils import _pair
 
-from detectron2.layers.wrappers import disable_torch_compiler
+from vton_model.detectron2.layers.wrappers import disable_torch_compiler
 
 
 class _ROIAlignRotated(Function):

@@ -2,9 +2,9 @@
 
 # pyre-unsafe
 
-from detectron2.structures import BitMasks, Instances
+from vton_model.detectron2.structures import BitMasks, Instances
 
-from densepose.converters import ToMaskConverter
+from vton_model.densepose.converters import ToMaskConverter
 
 
 class MaskFromDensePoseSampler:

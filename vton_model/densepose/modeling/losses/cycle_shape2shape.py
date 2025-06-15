@@ -8,9 +8,9 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from detectron2.config import CfgNode
+from vton_model.detectron2.config import CfgNode
 
-from densepose.structures.mesh import create_mesh
+from vton_model.densepose.structures.mesh import create_mesh
 
 from .utils import sample_random_indices
 

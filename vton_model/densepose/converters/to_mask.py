@@ -4,7 +4,7 @@
 
 from typing import Any, Tuple
 
-from detectron2.structures import BitMasks, Boxes
+from vton_model.detectron2.structures import BitMasks, Boxes
 
 from .base import BaseConverter
 

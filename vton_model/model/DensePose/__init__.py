@@ -9,13 +9,13 @@ import cv2
 import numpy as np
 import torch
 from PIL import Image
-from densepose import add_densepose_config
-from densepose.vis.base import CompoundVisualizer
-from densepose.vis.densepose_results import DensePoseResultsFineSegmentationVisualizer
-from densepose.vis.extractor import create_extractor, CompoundExtractor
-from detectron2.config import get_cfg
-from detectron2.data.detection_utils import read_image
-from detectron2.engine.defaults import DefaultPredictor
+from vton_model.densepose import add_densepose_config
+from vton_model.densepose.vis.base import CompoundVisualizer
+from vton_model.densepose.vis.densepose_results import DensePoseResultsFineSegmentationVisualizer
+from vton_model.densepose.vis.extractor import create_extractor, CompoundExtractor
+from vton_model.detectron2.config import get_cfg
+from vton_model.detectron2.data.detection_utils import read_image
+from vton_model.detectron2.engine.defaults import DefaultPredictor
 
 
 class DensePose:

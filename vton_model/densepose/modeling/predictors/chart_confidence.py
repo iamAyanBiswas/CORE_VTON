@@ -6,8 +6,8 @@ from typing import Any
 import torch
 from torch.nn import functional as F
 
-from detectron2.config import CfgNode
-from detectron2.layers import ConvTranspose2d
+from vton_model.detectron2.config import CfgNode
+from vton_model.detectron2.layers import ConvTranspose2d
 
 from ...structures import decorate_predictor_output_class_with_confidences
 from ..confidence import DensePoseConfidenceModelConfig, DensePoseUVConfidenceType

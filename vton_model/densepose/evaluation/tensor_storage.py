@@ -11,8 +11,8 @@ from operator import mul
 from typing import BinaryIO, Dict, Optional, Tuple
 import torch
 
-from detectron2.utils.comm import gather, get_rank
-from detectron2.utils.file_io import PathManager
+from vton_model.detectron2.utils.comm import gather, get_rank
+from vton_model.detectron2.utils.file_io import PathManager
 
 
 @dataclass

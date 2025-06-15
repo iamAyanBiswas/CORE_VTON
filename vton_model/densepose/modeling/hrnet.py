@@ -13,9 +13,9 @@ from __future__ import absolute_import, division, print_function
 import logging
 import torch.nn as nn
 
-from detectron2.layers import ShapeSpec
-from detectron2.modeling.backbone import BACKBONE_REGISTRY
-from detectron2.modeling.backbone.backbone import Backbone
+from vton_model.detectron2.layers import ShapeSpec
+from vton_model.detectron2.modeling.backbone import BACKBONE_REGISTRY
+from vton_model.detectron2.modeling.backbone.backbone import Backbone
 
 BN_MOMENTUM = 0.1
 logger = logging.getLogger(__name__)

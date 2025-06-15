@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from typing import Any, Optional
 import torch
 
-from detectron2.structures import BoxMode, Instances
+from vton_model.detectron2.structures import BoxMode, Instances
 
 from .utils import AnnotationsAccumulator
 

@@ -3,7 +3,7 @@
 # pyre-unsafe
 import torch
 
-from densepose.structures.data_relative import DensePoseDataRelative
+from vton_model.densepose.structures.data_relative import DensePoseDataRelative
 
 
 class DensePoseList:

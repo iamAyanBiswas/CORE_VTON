@@ -8,14 +8,14 @@ import logging
 from typing import Any, Dict, List, Tuple
 import torch
 
-from detectron2.data import MetadataCatalog
-from detectron2.data import detection_utils as utils
-from detectron2.data import transforms as T
-from detectron2.layers import ROIAlign
-from detectron2.structures import BoxMode
-from detectron2.utils.file_io import PathManager
+from vton_model.detectron2.data import MetadataCatalog
+from vton_model.detectron2.data import detection_utils as utils
+from vton_model.detectron2.data import transforms as T
+from vton_model.detectron2.layers import ROIAlign
+from vton_model.detectron2.structures import BoxMode
+from vton_model.detectron2.utils.file_io import PathManager
 
-from densepose.structures import DensePoseDataRelative, DensePoseList, DensePoseTransformData
+from vton_model.densepose.structures import DensePoseDataRelative, DensePoseList, DensePoseTransformData
 
 
 def build_augmentation(cfg, is_train):

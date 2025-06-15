@@ -6,7 +6,7 @@ import pickle
 import torch
 from torch import nn
 
-from detectron2.utils.file_io import PathManager
+from vton_model.detectron2.utils.file_io import PathManager
 
 from .utils import normalize_embeddings
 

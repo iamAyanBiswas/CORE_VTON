@@ -6,7 +6,7 @@ from typing import Dict
 import torch
 from torch.nn import functional as F
 
-from detectron2.structures.boxes import Boxes, BoxMode
+from vton_model.detectron2.structures.boxes import Boxes, BoxMode
 
 from ..structures import (
     DensePoseChartPredictorOutput,

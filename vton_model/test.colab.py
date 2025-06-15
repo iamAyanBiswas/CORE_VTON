@@ -18,9 +18,10 @@ torch.backends.cuda.matmul.allow_tf32 = True
 torch.backends.cudnn.allow_tf32 = True
 torch.jit.script = lambda f: f
 
-from model.cloth_masker import AutoMasker, vis_mask
-from model.pipeline import CatVTONPipeline
-from utils import resize_and_crop, resize_and_padding
+from vton_model.model.cloth_masker import AutoMasker, vis_mask
+from vton_model.model.pipeline import CatVTONPipeline
+
+from vton_model.utils import resize_and_crop, resize_and_padding
 
 def parse_args():
     parser = argparse.ArgumentParser()
