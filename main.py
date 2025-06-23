@@ -15,6 +15,11 @@ import asyncio
 from pydantic import BaseModel
 from validators import url
 import httpx
+
+import aiohttp
+import tempfile
+import os
+
 from fastapi import FastAPI, Form, HTTPException, Request
 from fastapi.responses import JSONResponse
 
@@ -51,11 +56,35 @@ async def custom_http_exception_handler(request: Request, exc: HTTPException):
 
 
 
-async def download_image(url: str) -> bytes:
-    async with httpx.AsyncClient() as client:
-        response = await client.get(url)
-        response.raise_for_status()
-        return response.content
+# async def download_image(url: str) -> bytes:
+#     async with httpx.AsyncClient() as client:
+#         response = await client.get(url)
+#         response.raise_for_status()
+#         return response.content
+    
+
+async def download_image_to_temp_async(url):
+    # Get file extension or default to .jpg
+    ext = os.path.splitext(url)[-1]
+    if ext.lower() not in ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp']:
+        ext = '.jpg'
+
+    # Create a NamedTemporaryFile (closed so aiohttp can write)
+    temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=ext)
+    temp_file.close()
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as resp:
+            if resp.status == 200:
+                with open(temp_file.name, 'wb') as f:
+                    while True:
+                        chunk = await resp.content.read(1024)
+                        if not chunk:
+                            break
+                        f.write(chunk)
+                return temp_file.name
+            else:
+                raise Exception(f"Failed to download image, status code: {resp.status}")
 
 
 
@@ -116,11 +145,11 @@ async def vton_api(request:VTonRequest):
 
     # Download images
     try:
-        person_bytes= await download_image(person_image_url)
+        person_bytes= await download_image_to_temp_async(person_image_url)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Unexpected error downloading person_image_url")
     try:
-        cloth_bytes= await download_image(cloth_image_url)
+        cloth_bytes= await download_image_to_temp_async(cloth_image_url)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Unexpected error downloading cloth_image_url")
 
@@ -138,6 +167,7 @@ async def vton_api(request:VTonRequest):
             seed,
             show_type,
         )
+        print(generated_image_bytes)
     except Exception as e:
         raise HTTPException(status_code=400, detail="Unexpected error occurred during generating image")
 

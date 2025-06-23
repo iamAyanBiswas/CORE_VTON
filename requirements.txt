@@ -25,6 +25,6 @@ python-dotenv
 cloudinary
 fastapi
 uvicorn
-httpx
 pyngrok 
 validators
+aiohttp
