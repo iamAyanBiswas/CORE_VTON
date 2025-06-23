@@ -11,6 +11,18 @@
 # !pip install -r requirements.txt
 # !python test.colab.py
 
+
+# ex-payload
+# {
+#   "person_image_url": "https://zhengchong-catvton.hf.space/file=/tmp/gradio/ba5ba7978e7302e8ab5eb733cc7221394c4e6faf/model_5.png",
+#   "cloth_image_url": "https://zhengchong-catvton.hf.space/file=/tmp/gradio/863e42db021d45ae5281225735e64c15996d9f62/23255574_53383833_1000.jpg",
+#   "cloth_type": "upper",
+#   "num_inference_steps": 10,
+#   "guidance_scale": 3,
+#   "seed": 42,
+#   "show_type": "result only"
+# }
+
 import io
 from PIL import Image
 
