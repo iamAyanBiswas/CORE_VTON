@@ -11,6 +11,10 @@
 # !pip install -r requirements.txt
 # !python test.colab.py
 
+import io
+from PIL import Image
+
+
 import asyncio
 from pydantic import BaseModel
 from validators import url
@@ -26,7 +30,7 @@ from fastapi.responses import JSONResponse
 
 from utils.api_response import ApiResponse
 # from vton_model.app import vton
-from vton_model.test.colab import submit_function
+from vton_model.testcolab import submit_function
 from utils.cloudinary import upload_image_to_cloudinary    
 from utils.ngrok import get_ngrok_url
 
@@ -55,13 +59,15 @@ async def custom_http_exception_handler(request: Request, exc: HTTPException):
 
 
 
+async def pil_image_to_bytes_async(image: Image.Image, format="PNG") -> bytes:
+    def sync_save():
+        img_byte_arr = io.BytesIO()
+        image.save(img_byte_arr, format=format)
+        return img_byte_arr.getvalue()
+    return await asyncio.to_thread(sync_save)   
 
-# async def download_image(url: str) -> bytes:
-#     async with httpx.AsyncClient() as client:
-#         response = await client.get(url)
-#         response.raise_for_status()
-#         return response.content
-    
+
+
 
 async def download_image_to_temp_async(url):
     # Get file extension or default to .jpg
@@ -156,7 +162,7 @@ async def vton_api(request:VTonRequest):
     # Run blocking GPU function in executor to avoid blocking event loop
     loop = asyncio.get_running_loop()
     try:
-        generated_image_bytes = await loop.run_in_executor(
+        generated_image = await loop.run_in_executor(
             None,
             submit_function,
             person_bytes,
@@ -167,11 +173,17 @@ async def vton_api(request:VTonRequest):
             seed,
             show_type,
         )
-        print(generated_image_bytes)
     except Exception as e:
         raise HTTPException(status_code=400, detail="Unexpected error occurred during generating image")
 
+    try:
+      buffer = io.BytesIO()
+      await loop.run_in_executor(None, generated_image.save, buffer, "PNG")
+      buffer.seek(0)
+      generated_image_bytes=buffer.read()
 
+    except Exception as e:
+      raise HTTPException(status_code=400, detail="Unexpected error occurred during transform image putput")
     try:
         output_url = await upload_image_to_cloudinary(generated_image_bytes)
     except Exception as e:

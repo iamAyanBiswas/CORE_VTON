@@ -200,15 +200,6 @@ automasker = AutoMasker(
     device='cuda',
 )
 
-def save_img(person_image_background, person_image_layers_0):
-    save_dir = "./saved_images"
-    os.makedirs(save_dir, exist_ok=True)
-
-    _, ext = os.path.splitext(person_image_background)
-    shutil.copy(person_image_background, os.path.join(save_dir, f"background{ext}"))
-
-    _, ext = os.path.splitext(person_image_layers_0)
-    shutil.copy(person_image_layers_0, os.path.join(save_dir, f"mask{ext}"))
 
 
 
@@ -216,17 +207,8 @@ def save_img(person_image_background, person_image_layers_0):
 @spaces.GPU(duration=120)
 def submit_function(person_image, cloth_image, cloth_type, num_inference_steps, guidance_scale, seed, show_type):
     print({'cloth_type': cloth_type, 'num_inference_steps': num_inference_steps, 'guidance_scale': guidance_scale, 'seed': seed, 'show_type': show_type})
-    person_image, mask = person_image["background"], person_image["layers"][0]
 
-    save_img(person_image, mask)
-
-    mask = Image.open(mask).convert("L")
-    if len(np.unique(np.array(mask))) == 1:
-        mask = None
-    else:
-        mask = np.array(mask)
-        mask[mask > 0] = 255
-        mask = Image.fromarray(mask)
+    mask = None
 
     tmp_folder = args['output_dir']
     date_str = datetime.now().strftime("%Y%m%d%H%M%S")
