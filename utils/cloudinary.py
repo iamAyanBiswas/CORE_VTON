@@ -18,7 +18,7 @@ async def upload_image_to_cloudinary(image_bytes):
     if not image_bytes:
         raise ValueError("Image bytes cannot be None")
     try:
-        response = cloudinary.uploader.upload(image_bytes)
+        response = cloudinary.uploader.upload(image_bytes,{'folder':'vton/generated'})
         return response["secure_url"]
     except Exception as e:
         print(e)
