@@ -42,7 +42,7 @@ from fastapi.responses import JSONResponse
 
 from utils.api_response import ApiResponse
 # from vton_model.app import vton
-from vton_model.testcolab import submit_function
+from vton_model.app import submit_function
 from utils.cloudinary import upload_image_to_cloudinary    
 from utils.ngrok import get_ngrok_url
 
