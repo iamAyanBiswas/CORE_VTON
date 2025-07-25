@@ -1,1 +1,1 @@
-#CORE_VTON is modified version with API end point 
+VTON
