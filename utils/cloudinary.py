@@ -13,7 +13,7 @@ config=cloudinary.config(
 )
 
 
-async def upload_image_to_cloudinary(image_bytes):
+def upload_image_to_cloudinary(image_bytes):
     # Upload the image to Cloudinary
     if not image_bytes:
         raise ValueError("Image bytes cannot be None")

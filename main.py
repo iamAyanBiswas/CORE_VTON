@@ -1,211 +1,150 @@
-# !pip install fastapi uvicorn py-localtunnel
-# !mkdir api
-# %cd api
-# !touch main.py
-# !curl ipecho.net/plain
-# !uvicorn main:app & pylt port 8000
-
-
-# !git clone -b dev https://github.com/iamAyanBiswas/CORE_VTON
-# %cd CORE_VTON
-# !pip install -r requirements.txt
-# !uvicorn main:app
-
-
-# ex-payload
-# {
-#   "person_image_url": "https://zhengchong-catvton.hf.space/file=/tmp/gradio/ba5ba7978e7302e8ab5eb733cc7221394c4e6faf/model_5.png",
-#   "cloth_image_url": "https://zhengchong-catvton.hf.space/file=/tmp/gradio/863e42db021d45ae5281225735e64c15996d9f62/23255574_53383833_1000.jpg",
-#   "cloth_type": "upper",
-#   "num_inference_steps": 10,
-#   "guidance_scale": 3,
-#   "seed": 42,
-#   "show_type": "result only"
-# }
-
-import io
-from PIL import Image
-
-
-import asyncio
-from pydantic import BaseModel
-from validators import url
-import httpx
-
-import aiohttp
-import tempfile
+# main.py
+import json
 import os
+import tempfile
+import io
+import requests
+from validators import url
+from utils.redis import r, QUEUE_NAME
+from utils.postgresql import update_job_status
+from utils.cloudinary import upload_image_to_cloudinary
+from vton_model.app import vton
 
-from fastapi import FastAPI, Form, HTTPException, Request
-from fastapi.responses import JSONResponse
+REQUIRED_FIELDS = [
+    "job_id",
+    "person_image_url",
+    "cloth_image_url",
+    "cloth_type",
+    "num_inference_steps",
+    "guidance_scale",
+    "seed",
+    "show_type",
+]
 
+CLOTH_TYPES = ["upper", "lower", "overall"]
+SHOW_TYPES = ["result only", "input & result", "input & mask & result"]
 
-from utils.api_response import ApiResponse
-# from vton_model.app import vton
-from vton_model.app import submit_function
-from utils.cloudinary import upload_image_to_cloudinary    
-from utils.ngrok import get_ngrok_url
-
-class VTonRequest(BaseModel):
-    person_image_url: str
-    cloth_image_url: str
-    cloth_type: str
-    num_inference_steps: int
-    guidance_scale: float
-    seed: int
-    show_type: str
-
-
-app = FastAPI()
-
-get_ngrok_url(8000)
-
-
-@app.exception_handler(HTTPException)
-async def custom_http_exception_handler(request: Request, exc: HTTPException):
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={
-            "message": exc.detail if isinstance(exc.detail, str) else exc.detail.get("message")},
-    )
-
-
-
-
-async def pil_image_to_bytes_async(image: Image.Image, format="PNG") -> bytes:
-    def sync_save():
-        img_byte_arr = io.BytesIO()
-        image.save(img_byte_arr, format=format)
-        return img_byte_arr.getvalue()
-    return await asyncio.to_thread(sync_save)   
-
-
-
-
-async def download_image_to_temp_async(url):
-    # Get file extension or default to .jpg
-    ext = os.path.splitext(url)[-1]
-    if ext.lower() not in ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp']:
-        ext = '.jpg'
-
-    # Create a NamedTemporaryFile (closed so aiohttp can write)
+# Synchronous image download (returns temp file path)
+def download_image_to_temp(url_str):
+    ext = os.path.splitext(url_str)[-1]
+    if ext.lower() not in [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"]:
+        ext = ".jpg"
     temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=ext)
-    temp_file.close()
-
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as resp:
-            if resp.status == 200:
-                with open(temp_file.name, 'wb') as f:
-                    while True:
-                        chunk = await resp.content.read(1024)
-                        if not chunk:
-                            break
-                        f.write(chunk)
-                return temp_file.name
-            else:
-                raise Exception(f"Failed to download image, status code: {resp.status}")
-
-
-
-@app.get("/")
-async def root(query=""):
-    return ApiResponse(message="Welcome to the VTON API", data={"query": query}).json()
-
-@app.post("/vton")
-async def vton_api(request:VTonRequest):
-    person_image_url= request.person_image_url
-    cloth_image_url= request.cloth_image_url
-    cloth_type= request.cloth_type
-    num_inference_steps= request.num_inference_steps
-    guidance_scale= request.guidance_scale
-    seed= request.seed
-    show_type= request.show_type
-
-    required_fields = [
-        "person_image_url",
-        "cloth_image_url",
-        "cloth_type",
-        "num_inference_steps",
-        "guidance_scale",
-        "seed",
-        "show_type",
-    ]
-
-    # Check for missing fields
-    for field in required_fields:
-        if getattr(request, field, None) in (None, ""):
-            raise HTTPException(status_code=400, detail=f"{field} is required")
-
-    # Validate URLs
-    if not url(person_image_url):
-        raise HTTPException(status_code=400, detail="person_image_url is not valid")
-    if not url(cloth_image_url):
-        raise HTTPException(status_code=400, detail="cloth_image_url is not valid")
-
-    # Validate cloth_type
-    if not cloth_type in ["upper", "lower", "overall"]:
-        raise HTTPException(status_code=400, detail="cloth_type must be one of 'upper', 'lower', 'overall'")
-
-    # Validate num_inference_steps
-    if not 10<=num_inference_steps<=100:
-        raise HTTPException(status_code=400, detail="num_inference_steps must be between 10 and 100")
-
-    # Validate guidance_scale
-    if not 0.1<=guidance_scale<=7.5:
-        raise HTTPException(status_code=400, detail="guidance_scale must be between 0.1 and 7.5")
-
-    # Validate seed
-    if not -1<=seed<=1000:
-        raise HTTPException(status_code=400, detail="seed must be between -1 and 1000")
-
-    # Validate show_type
-    if not show_type in ["result only", "input & result", "input & mask & result"]:
-        raise HTTPException(status_code=400, detail="show_type must be one of 'result only', 'input & result', 'input & mask & result'")
-
-    # Download images
     try:
-        person_bytes= await download_image_to_temp_async(person_image_url)
+        resp = requests.get(url_str, stream=True, timeout=30)
+        resp.raise_for_status()
+        with open(temp_file.name, "wb") as f:
+            for chunk in resp.iter_content(1024):
+                if not chunk:
+                    break
+                f.write(chunk)
+        return temp_file.name
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Unexpected error downloading person_image_url")
-    try:
-        cloth_bytes= await download_image_to_temp_async(cloth_image_url)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Unexpected error downloading cloth_image_url")
+        temp_file.close()
+        os.unlink(temp_file.name)
+        raise e
 
-    # Run blocking GPU function in executor to avoid blocking event loop
-    loop = asyncio.get_running_loop()
-    try:
-        generated_image = await loop.run_in_executor(
-            None,
-            submit_function,
-            person_bytes,
-            cloth_bytes,
-            cloth_type,
-            num_inference_steps,
-            guidance_scale,
-            seed,
-            show_type,
-        )
-    except Exception as e:
-        raise HTTPException(status_code=400, detail="Unexpected error occurred during generating image")
+def validate_job(job_dict):
+    for field in REQUIRED_FIELDS:
+        if field not in job_dict or job_dict[field] in (None, ""):
+            raise ValueError(f"{field} is required")
+    if not url(job_dict["person_image_url"]):
+        raise ValueError("person_image_url is not valid")
+    if not url(job_dict["cloth_image_url"]):
+        raise ValueError("cloth_image_url is not valid")
+    if job_dict["cloth_type"] not in CLOTH_TYPES:
+        raise ValueError("cloth_type must be one of 'upper', 'lower', 'overall'")
+    if not (10 <= int(job_dict["num_inference_steps"]) <= 100):
+        raise ValueError("num_inference_steps must be between 10 and 100")
+    if not (0.1 <= float(job_dict["guidance_scale"]) <= 7.5):
+        raise ValueError("guidance_scale must be between 0.1 and 7.5")
+    if not (-1 <= int(job_dict["seed"]) <= 1000):
+        raise ValueError("seed must be between -1 and 1000")
+    if job_dict["show_type"] not in SHOW_TYPES:
+        raise ValueError("show_type must be one of 'result only', 'input & result', 'input & mask & result'")
 
-    try:
-      buffer = io.BytesIO()
-      await loop.run_in_executor(None, generated_image.save, buffer, "PNG")
-      buffer.seek(0)
-      generated_image_bytes=buffer.read()
+def worker_loop():
+    while True:
+        try:
+            job_data = r.blpop(QUEUE_NAME, timeout=0)
+            if not job_data:
+                print("Empty Queue")
+                continue
+            _, raw = job_data
+            job_dict = json.loads(raw)
+            job_id = job_dict.get("job_id")
+            print(f"Processing job {job_id} ...")
+            try:
+                validate_job(job_dict)
+            except Exception as e:
+                print(f"Validation error: {e}")
+                if job_id:
+                    update_job_status(job_id, "failed")
+                continue
+            update_job_status(job_id, "processing")
 
-    except Exception as e:
-      raise HTTPException(status_code=400, detail="Unexpected error occurred during transform image putput")
-    try:
-        output_url = await upload_image_to_cloudinary(generated_image_bytes)
-    except Exception as e:
-        print(e)
-        raise HTTPException(status_code=400, detail="Unexpected error occurred during uploading image")
+            # Download images
+            try:
+                person_path = download_image_to_temp(job_dict["person_image_url"])
+            except Exception as e:
+                print(f"Error downloading person_image_url: {e}")
+                update_job_status(job_id, "failed")
+                continue
+            try:
+                cloth_path = download_image_to_temp(job_dict["cloth_image_url"])
+            except Exception as e:
+                print(f"Error downloading cloth_image_url: {e}")
+                update_job_status(job_id, "failed")
+                os.unlink(person_path)
+                continue
 
+            # Run VTON model
+            try:
+                result_image = vton(
+                    person_path,
+                    cloth_path,
+                    job_dict["cloth_type"],
+                    int(job_dict["num_inference_steps"]),
+                    float(job_dict["guidance_scale"]),
+                    int(job_dict["seed"]),
+                    job_dict["show_type"]
+                )
+            except Exception as e:
+                print(f"Error running VTON model: {e}")
+                update_job_status(job_id, "failed")
+                os.unlink(person_path)
+                os.unlink(cloth_path)
+                continue
 
-    return ApiResponse(data={"url": output_url}).json()
+            # Save result image to bytes
+            buffer = io.BytesIO()
+            try:
+                result_image.save(buffer, format="PNG")
+                buffer.seek(0)
+                image_bytes = buffer.read()
+            except Exception as e:
+                print(f"Error saving result image: {e}")
+                update_job_status(job_id, "failed")
+                os.unlink(person_path)
+                os.unlink(cloth_path)
+                continue
+            try:
+                image_url = upload_image_to_cloudinary(image_bytes)
+            except Exception as e:
+                print(f"Error uploading to Cloudinary: {e}")
+                update_job_status(job_id, "failed")
+                os.unlink(person_path)
+                os.unlink(cloth_path)
+                continue
+            # Update job status
+            update_job_status(job_id, "completed", image_url=image_url)
+            print(f"✅ Job {job_id} completed: {image_url}")
+            # Cleanup
+            os.unlink(person_path)
+            os.unlink(cloth_path)
+        except Exception as e:
+            print(f"❌ Worker error: {e}")
+            # Optionally: add retry logic or DLQ
 
-
-
-
+if __name__ == "__main__":
+    worker_loop()

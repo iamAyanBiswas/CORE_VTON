@@ -64,7 +64,7 @@ automasker = AutoMasker(
 
 
 @spaces.GPU(duration=120)
-def submit_function(person_image, cloth_image, cloth_type, num_inference_steps, guidance_scale, seed, show_type):
+def vton(person_image, cloth_image, cloth_type, num_inference_steps, guidance_scale, seed, show_type):
     print({'cloth_type': cloth_type, 'num_inference_steps': num_inference_steps, 'guidance_scale': guidance_scale, 'seed': seed, 'show_type': show_type})
 
     mask = None

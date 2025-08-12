@@ -18,13 +18,12 @@ cloudpickle
 omegaconf
 pycocotools
 av
-gradio
 peft
 huggingface_hub
 python-dotenv
 cloudinary
-fastapi
-uvicorn
 pyngrok 
 validators
 aiohttp
+redis
+psycopg2-binary
