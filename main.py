@@ -11,7 +11,7 @@ from utils.cloudinary import upload_image_to_cloudinary
 from vton_model.app import vton
 
 REQUIRED_FIELDS = [
-    "job_id",
+    "id",
     "person_image_url",
     "cloth_image_url",
     "cloth_type",
@@ -72,7 +72,7 @@ def worker_loop():
                 continue
             _, raw = job_data
             job_dict = json.loads(raw)
-            job_id = job_dict.get("job_id")
+            job_id = job_dict.get("id")
             print(f"Processing job {job_id} ...")
             try:
                 validate_job(job_dict)
@@ -137,7 +137,7 @@ def worker_loop():
                 os.unlink(cloth_path)
                 continue
             # Update job status
-            update_job_status(job_id, "completed", image_url=image_url)
+            update_job_status(job_id, "completed", image_url=image_url, update=True)
             print(f"✅ Job {job_id} completed: {image_url}")
             # Cleanup
             os.unlink(person_path)

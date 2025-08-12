@@ -9,7 +9,7 @@
 # !git clone -b dev https://github.com/iamAyanBiswas/CORE_VTON
 # %cd CORE_VTON
 # !pip install -r requirements.txt
-# !uvicorn main:app
+# !python main.py
 
 
 # ex-payload

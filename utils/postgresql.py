@@ -16,28 +16,44 @@ db_pool = pool.SimpleConnectionPool(
 
 
 
-def add_job(job_id: str, status: str, image_url: str = None):
+def update_job_status(job_id: str, status: str, image_url: str = None, update: bool = False):
     conn = db_pool.getconn()
     try:
         with conn.cursor() as cur:
-            if image_url is not None:
-                query = sql.SQL("""
-                    INSERT INTO vton_jobs (id, status, vton_image_url)
-                    VALUES (%s, %s, %s)
-                """)
-                cur.execute(query, (job_id, status, image_url))
+            if update:
+                if image_url is not None:
+                    query = sql.SQL("""
+                        UPDATE vton_jobs
+                        SET status = %s, vton_image_url = %s
+                        WHERE id = %s
+                    """)
+                    cur.execute(query, (status, image_url, job_id))
+                else:
+                    query = sql.SQL("""
+                        UPDATE vton_jobs
+                        SET status = %s
+                        WHERE id = %s
+                    """)
+                    cur.execute(query, (status, job_id))
+                print(f"Updated job {job_id} with status {status} and image_url {image_url}")
             else:
-                query = sql.SQL("""
-                    INSERT INTO vton_jobs (id, status)
-                    VALUES (%s, %s)
-                """)
-                cur.execute(query, (job_id, status))
+                if image_url is not None:
+                    query = sql.SQL("""
+                        INSERT INTO vton_jobs (id, status, vton_image_url)
+                        VALUES (%s, %s, %s)
+                    """)
+                    cur.execute(query, (job_id, status, image_url))
+                else:
+                    query = sql.SQL("""
+                        INSERT INTO vton_jobs (id, status)
+                        VALUES (%s, %s)
+                    """)
+                    cur.execute(query, (job_id, status))
+                print(f"Added job {job_id} with status {status} and image_url {image_url}")
             conn.commit()
-            print(f"Added job {job_id} with status {status} and image_url {image_url}")
     except Exception as e:
         conn.rollback()
-        print("Error adding job:", e)
+        print("Error adding/updating job:", e)
         raise
     finally:
         db_pool.putconn(conn)
-
