@@ -1,3 +1,10 @@
+# !git clone -b dev https://github.com/iamAyanBiswas/CORE_VTON
+# %cd CORE_VTON
+# !pip install -r requirements.txt
+# !python main.py
+
+
+
 # main.py
 import json
 import os
